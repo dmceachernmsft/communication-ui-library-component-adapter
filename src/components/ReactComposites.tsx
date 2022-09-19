@@ -58,5 +58,5 @@ export const ReactComposites = (props: ReactCompositeProps): JSX.Element => {
 }
 
 const containerStyle = {
-    height: '50%',
+    height: '30rem',
 };
