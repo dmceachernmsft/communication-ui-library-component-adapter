@@ -1,24 +1,17 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { ReactComposites } from './components/ReactComposites';
+import {v1 as generateGUID} from 'uuid';
 
 export const App = (): JSX.Element => {
+  const userId = '<Azure Communication Services Identifier>';
+  const displayName = '<Display Name>';
+  const token = '<Azure Communication Services Access Token>';
+  // Calling Variables
+  // Provide any valid UUID for `groupId`.
+  const groupId = generateGUID();
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ReactComposites userId={userId} displayName={displayName} token={token} groupId={groupId} />
     </div>
   );
 }
