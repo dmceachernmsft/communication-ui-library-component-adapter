@@ -8,7 +8,7 @@ import {
 } from '@azure/communication-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import CallingComponents from './ui-components/CallingComponents';
-import { registerIcons } from '@fluentui/react';
+import { mergeStyles, registerIcons, Stack } from '@fluentui/react';
 
 
 export interface ReactComponentsProps {
@@ -50,14 +50,16 @@ export const ReactComponents = (props: ReactComponentsProps): JSX.Element => {
     }, [credential, displayName, groupId, userId]);
 
     if (!!adapter) {
-        adapter.joinCall();
-        console.log(adapter);
+        adapter.askDevicePermission({ video: true, audio: true });
+        adapter.queryCameras();
+        adapter.queryMicrophones();
+        adapter.querySpeakers();
         return (
             <>
                 <FluentThemeProvider>
                     {adapter && (<CallAdapterProvider adapter={adapter}>
-                            <CallingComponents />
-                        </CallAdapterProvider>)}
+                        <Stack className={mergeStyles({ margin: 'auto' })}><CallingComponents /></Stack>
+                    </CallAdapterProvider>)}
                 </FluentThemeProvider>
 
             </>
