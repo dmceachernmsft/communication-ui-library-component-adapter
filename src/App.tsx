@@ -18,7 +18,7 @@ export const App = (): JSX.Element => {
   return (
     <div className="App">
       <ReactComposites userId={userId1} displayName={displayName} token={token1} groupId={groupId} />
-      <ReactComponents userId={userId2} displayName={displayName} token={token2} groupId={groupId}/>
+      <ReactComponents userId={userId2} displayName={displayName} token={token2} groupId={groupId} />
     </div>
   );
 }
