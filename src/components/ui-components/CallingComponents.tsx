@@ -1,8 +1,10 @@
-import { usePropsFor, VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, useCall } from '@azure/communication-react';
+import { usePropsFor, VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, useCall, usePropsForComposite } from '@azure/communication-react';
 import { mergeStyles, Stack } from '@fluentui/react';
 import React, { useCallback, useState } from 'react';
 
 function CallingComponents(): JSX.Element {
+
+    const videoGalleryCompositeProps = usePropsForComposite(VideoGallery);
 
     const videoGalleryProps = usePropsFor(VideoGallery);
     const cameraProps = usePropsFor(CameraButton);
