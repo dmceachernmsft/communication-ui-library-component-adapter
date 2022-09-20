@@ -1,25 +1,22 @@
-import { usePropsFor, VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, useCall, usePropsForComposite } from '@azure/communication-react';
+import { usePropsFor, VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, useCall, usePropsForComposite, useAdapter } from '@azure/communication-react';
 import { mergeStyles, Stack } from '@fluentui/react';
 import React, { useCallback, useState } from 'react';
-import { useAdapter } from '../../adapter/CallAdapterProvider';
 
 function CallingComponents(): JSX.Element {
     const adapter = useAdapter();
+    console.log(adapter);
 
     const videoGalleryProps = usePropsForComposite(VideoGallery);
     const cameraProps = usePropsForComposite(CameraButton);
     const microphoneProps = usePropsForComposite(MicrophoneButton);
     const screenShareProps = usePropsForComposite(ScreenShareButton);
-    const endCallProps = usePropsForComposite(EndCallButton);
 
     const [callEnded, setCallEnded] = useState(false);
 
-    const call = useCall();
-
     const onHangup = useCallback(async (): Promise<void> => {
-        await endCallProps.onHangUp();
+        await adapter.leaveCall();
         setCallEnded(true);
-    }, [endCallProps]);
+    }, []);
 
     if (callEnded) {
         return <CallEnded />;
@@ -32,10 +29,10 @@ function CallingComponents(): JSX.Element {
             </div>
 
             <ControlBar layout='floatingBottom'>
-                {cameraProps && <CameraButton {...cameraProps} disabled={call ? false : true} />}
-                {microphoneProps && <MicrophoneButton   {...microphoneProps} disabled={call ? false : true} />}
+                {cameraProps && <CameraButton {...cameraProps} />}
+                {microphoneProps && <MicrophoneButton   {...microphoneProps} />}
                 {screenShareProps && <ScreenShareButton  {...screenShareProps} />}
-                {endCallProps && <EndCallButton {...endCallProps} onHangUp={onHangup} />}
+                {<EndCallButton onHangUp={onHangup} />}
             </ControlBar>
         </Stack>
     );
