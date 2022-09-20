@@ -1,16 +1,16 @@
 import { usePropsFor, VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, useCall, usePropsForComposite } from '@azure/communication-react';
 import { mergeStyles, Stack } from '@fluentui/react';
 import React, { useCallback, useState } from 'react';
+import { useAdapter } from '../../adapter/CallAdapterProvider';
 
 function CallingComponents(): JSX.Element {
+    const adapter = useAdapter();
 
-    const videoGalleryCompositeProps = usePropsForComposite(VideoGallery);
-
-    const videoGalleryProps = usePropsFor(VideoGallery);
-    const cameraProps = usePropsFor(CameraButton);
-    const microphoneProps = usePropsFor(MicrophoneButton);
-    const screenShareProps = usePropsFor(ScreenShareButton);
-    const endCallProps = usePropsFor(EndCallButton);
+    const videoGalleryProps = usePropsForComposite(VideoGallery);
+    const cameraProps = usePropsForComposite(CameraButton);
+    const microphoneProps = usePropsForComposite(MicrophoneButton);
+    const screenShareProps = usePropsForComposite(ScreenShareButton);
+    const endCallProps = usePropsForComposite(EndCallButton);
 
     const [callEnded, setCallEnded] = useState(false);
 
