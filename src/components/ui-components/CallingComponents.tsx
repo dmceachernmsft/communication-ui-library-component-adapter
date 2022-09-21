@@ -1,5 +1,6 @@
-import { VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, usePropsForComposite, useAdapter, CallCompositePage, CallAdapterState, VideoTile } from '@azure/communication-react';
-import { mergeStyles, PrimaryButton, Stack } from '@fluentui/react';
+import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
+import { VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, usePropsForComposite, useAdapter, CallCompositePage, CallAdapterState, VideoTile, CallAdapter, DevicesButton } from '@azure/communication-react';
+import { Dropdown, IDropdownOption, Label, mergeStyles, PrimaryButton, Stack } from '@fluentui/react';
 import React, { useEffect, useState } from 'react';
 
 function CallingComponents(): JSX.Element {
@@ -30,6 +31,7 @@ function CallingComponents(): JSX.Element {
     }
 
     if (page === 'configuration') {
+        const devices = getDevices(adapter);
         const startCallHandler = () => {
             adapter.joinCall();
         }
@@ -40,6 +42,20 @@ function CallingComponents(): JSX.Element {
                     <MicrophoneButton {...microphoneProps} />
                     <CameraButton {...cameraProps} />
                 </ControlBar>
+                <Stack styles={{ root: { width: '13rem', padding: '1rem' } }}>
+                    <Stack>
+                        <Label>Select your camera</Label>
+                        <Dropdown options={getDropDownList(devices.cameras)}></Dropdown>
+                    </Stack>
+                    <Stack>
+                        <Label>Select your microphone</Label>
+                        <Dropdown options={getDropDownList(devices.microphones)}></Dropdown>
+                    </Stack>
+                    <Stack>
+                        <Label>Select your speaker</Label>
+                        <Dropdown options={getDropDownList(devices.speakers)}></Dropdown>
+                    </Stack>
+                </Stack>
                 <PrimaryButton styles={{ root: { width: '12rem' } }} onClick={startCallHandler}>Start Call</PrimaryButton>
             </Stack>
         )
@@ -62,3 +78,28 @@ function CallingComponents(): JSX.Element {
 }
 
 export default CallingComponents;
+
+const getDevices = (adapter: CallAdapter): { cameras: VideoDeviceInfo[], microphones: AudioDeviceInfo[], speakers: AudioDeviceInfo[] } => {
+    return {
+        cameras: adapter.getState().devices.cameras,
+        microphones: adapter.getState().devices.microphones,
+        speakers: adapter.getState().devices.speakers
+    }
+}
+
+const getDropDownList = (list: Array<VideoDeviceInfo | AudioDeviceInfo>): IDropdownOption[] => {
+    const dropdownList: IDropdownOption[] = [];
+    const removeDuplicates = new Map<string, VideoDeviceInfo | AudioDeviceInfo>();
+    for (const device of list) {
+        removeDuplicates.set(device.id, device);
+    }
+
+    for (const device of removeDuplicates.values()) {
+        dropdownList.push({
+            key: device.id,
+            text: device.name === '' ? device.deviceType : device.name
+        })
+    }
+
+    return dropdownList;
+}
