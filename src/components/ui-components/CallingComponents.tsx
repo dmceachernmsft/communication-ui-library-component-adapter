@@ -64,11 +64,13 @@ function CallingComponents(): JSX.Element {
                         <ControlBar layout='floatingTop' >
                             <MicrophoneButton
                                 {...microphoneProps}
-                                disabled={devices.deviceAccess?.audio}
+                                disabled={!devices.deviceAccess?.audio}
                                 onToggleMicrophone={onToggleMic}
+                                checked={adapter.getState().isLocalPreviewMicrophoneEnabled}
+                                showLabel={true}
 
                             />
-                            <CameraButton {...cameraProps} />
+                            <CameraButton {...cameraProps} showLabel={true} />
                         </ControlBar>
                     </Stack>
                     <Stack styles={{ root: { width: '13rem', padding: '1rem', margin: 'auto' } }}>
