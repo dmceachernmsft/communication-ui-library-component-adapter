@@ -1,7 +1,7 @@
 import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
 import { VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, usePropsForComposite, useAdapter, CallCompositePage, CallAdapterState, VideoTile, CallAdapter, DevicesButton, StreamMedia } from '@azure/communication-react';
 import { Dropdown, IDropdownOption, Label, mergeStyles, PrimaryButton, Stack } from '@fluentui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 function CallingComponents(): JSX.Element {
     const adapter = useAdapter();
@@ -10,6 +10,10 @@ function CallingComponents(): JSX.Element {
     const cameraProps = usePropsForComposite(CameraButton);
     const microphoneProps = usePropsForComposite(MicrophoneButton);
     const screenShareProps = usePropsForComposite(ScreenShareButton);
+
+    const onToggleMic = useCallback(async () => {
+        adapter.getState().isLocalPreviewMicrophoneEnabled ? adapter.mute() : adapter.unmute();
+    }, [adapter]);
 
     const [page, setPage] = useState<CallCompositePage>(adapter.getState().page);
 
@@ -38,18 +42,32 @@ function CallingComponents(): JSX.Element {
         }
         return (
             <Stack styles={{ root: { margin: 'auto' } }}>
-                <h2>Configuration</h2>
+                <h2>Start a call</h2>
+                <Label>Configure your devices</Label>
                 <Stack horizontal>
-                    <Stack>
-                        <VideoTile renderElement={localView.length > 0 ? (
-                            <StreamMedia videoStreamElement={
-                                // this is something that should be better documented in the adapter line 35 as well
-                                localView.length > 0 && localView[0].view ?
-                                    localView[0].view.target : null} />) : undefined
-                        } />
+                    <Stack styles={{ root: { width: '30rem', height: '30rem', padding: '2rem' } }}>
+                        <div className={mergeStyles({ height: '100vh' })}>
+                            <VideoTile
+                                renderElement={localView.length > 0 ? (
+                                    <StreamMedia videoStreamElement={
+                                        // this is something that should be better documented in the adapter line 35 as well
+                                        localView.length > 0 && localView[0].view ?
+                                            localView[0].view.target : null} />) : undefined
+                                }
+                                onRenderPlaceholder={() => {
+                                    return (
+                                        <Label styles={{ root: { margin: 'auto' } }}>Your video is off</Label>
+                                    )
+                                }}
+                            />
+                        </div>
+                        <ControlBar layout='floatingTop' >
+                            <MicrophoneButton
+                                {...microphoneProps}
+                                disabled={devices.deviceAccess?.audio}
+                                onToggleMicrophone={onToggleMic}
 
-                        <ControlBar>
-                            <MicrophoneButton {...microphoneProps} />
+                            />
                             <CameraButton {...cameraProps} />
                         </ControlBar>
                     </Stack>
@@ -84,7 +102,7 @@ function CallingComponents(): JSX.Element {
                                 }}
                             ></Dropdown>
                         </Stack>
-                        <PrimaryButton styles={{ root: { width: '12rem' } }} onClick={startCallHandler}>Start Call</PrimaryButton>
+                        <PrimaryButton styles={{ root: { width: '12rem', marginTop: '2rem' } }} onClick={startCallHandler}>Start Call</PrimaryButton>
                     </Stack>
                 </Stack>
             </Stack>
