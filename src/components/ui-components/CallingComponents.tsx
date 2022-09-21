@@ -31,32 +31,55 @@ function CallingComponents(): JSX.Element {
     }
 
     if (page === 'configuration') {
-        const devices = getDevices(adapter);
+        const devices = adapter.getState().devices;
         const startCallHandler = () => {
             adapter.joinCall();
         }
         return (
             <Stack styles={{ root: { margin: 'auto' } }}>
-                <VideoTile />
-                <ControlBar>
-                    <MicrophoneButton {...microphoneProps} />
-                    <CameraButton {...cameraProps} />
-                </ControlBar>
-                <Stack styles={{ root: { width: '13rem', padding: '1rem' } }}>
+                <h2>Configuration</h2>
+                <Stack horizontal>
                     <Stack>
-                        <Label>Select your camera</Label>
-                        <Dropdown options={getDropDownList(devices.cameras)}></Dropdown>
+                        <VideoTile />
+                        <ControlBar>
+                            <MicrophoneButton {...microphoneProps} />
+                            <CameraButton {...cameraProps} />
+                        </ControlBar>
                     </Stack>
-                    <Stack>
-                        <Label>Select your microphone</Label>
-                        <Dropdown options={getDropDownList(devices.microphones)}></Dropdown>
-                    </Stack>
-                    <Stack>
-                        <Label>Select your speaker</Label>
-                        <Dropdown options={getDropDownList(devices.speakers)}></Dropdown>
+                    <Stack styles={{ root: { width: '13rem', padding: '1rem', margin: 'auto' } }}>
+                        <Stack styles={{ root: { padding: '0.5rem' } }}>
+                            <Label>Select your camera</Label>
+                            <Dropdown
+                                defaultSelectedKey={devices.selectedCamera?.id}
+                                options={getDropDownList(devices.cameras)}
+                                onChange={(event, option, index) => {
+                                    adapter.setCamera(devices.cameras[index ?? 0])
+                                }}
+                            ></Dropdown>
+                        </Stack>
+                        <Stack styles={{ root: { padding: '0.5rem' } }}>
+                            <Label>Select your microphone</Label>
+                            <Dropdown
+                                defaultSelectedKey={devices.selectedMicrophone?.id}
+                                options={getDropDownList(devices.microphones)}
+                                onChange={(event, option, index) => {
+                                    adapter.setMicrophone(devices.microphones[index ?? 0])
+                                }}
+                            ></Dropdown>
+                        </Stack>
+                        <Stack styles={{ root: { padding: '0.5rem' } }}>
+                            <Label>Select your speaker</Label>
+                            <Dropdown
+                                defaultSelectedKey={devices.selectedSpeaker?.id}
+                                options={getDropDownList(devices.speakers)}
+                                onChange={(event, option, index) => {
+                                    adapter.setSpeaker(devices.speakers[index ?? 0])
+                                }}
+                            ></Dropdown>
+                        </Stack>
+                        <PrimaryButton styles={{ root: { width: '12rem' } }} onClick={startCallHandler}>Start Call</PrimaryButton>
                     </Stack>
                 </Stack>
-                <PrimaryButton styles={{ root: { width: '12rem' } }} onClick={startCallHandler}>Start Call</PrimaryButton>
             </Stack>
         )
     }
@@ -78,14 +101,6 @@ function CallingComponents(): JSX.Element {
 }
 
 export default CallingComponents;
-
-const getDevices = (adapter: CallAdapter): { cameras: VideoDeviceInfo[], microphones: AudioDeviceInfo[], speakers: AudioDeviceInfo[] } => {
-    return {
-        cameras: adapter.getState().devices.cameras,
-        microphones: adapter.getState().devices.microphones,
-        speakers: adapter.getState().devices.speakers
-    }
-}
 
 const getDropDownList = (list: Array<VideoDeviceInfo | AudioDeviceInfo>): IDropdownOption[] => {
     const dropdownList: IDropdownOption[] = [];
