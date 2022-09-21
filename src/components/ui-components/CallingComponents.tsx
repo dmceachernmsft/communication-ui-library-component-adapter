@@ -1,5 +1,5 @@
 import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
-import { VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, usePropsForComposite, useAdapter, CallCompositePage, CallAdapterState, VideoTile, CallAdapter, DevicesButton } from '@azure/communication-react';
+import { VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, usePropsForComposite, useAdapter, CallCompositePage, CallAdapterState, VideoTile, CallAdapter, DevicesButton, StreamMedia } from '@azure/communication-react';
 import { Dropdown, IDropdownOption, Label, mergeStyles, PrimaryButton, Stack } from '@fluentui/react';
 import React, { useEffect, useState } from 'react';
 
@@ -32,6 +32,7 @@ function CallingComponents(): JSX.Element {
 
     if (page === 'configuration') {
         const devices = adapter.getState().devices;
+        const localView = adapter.getState().devices.unparentedViews
         const startCallHandler = () => {
             adapter.joinCall();
         }
@@ -40,7 +41,13 @@ function CallingComponents(): JSX.Element {
                 <h2>Configuration</h2>
                 <Stack horizontal>
                     <Stack>
-                        <VideoTile />
+                        <VideoTile renderElement={localView.length > 0 ? (
+                            <StreamMedia videoStreamElement={
+                                // this is something that should be better documented in the adapter line 35 as well
+                                localView.length > 0 && localView[0].view ?
+                                    localView[0].view.target : null} />) : undefined
+                        } />
+
                         <ControlBar>
                             <MicrophoneButton {...microphoneProps} />
                             <CameraButton {...cameraProps} />
