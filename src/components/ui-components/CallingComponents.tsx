@@ -1,7 +1,7 @@
 import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
-import { VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, usePropsForComposite, useAdapter, CallCompositePage, CallAdapterState, VideoTile, CallAdapter, DevicesButton, StreamMedia } from '@azure/communication-react';
+import { VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, usePropsForComposite, useAdapter, CallCompositePage, CallAdapterState, VideoTile, StreamMedia } from '@azure/communication-react';
 import { Dropdown, IDropdownOption, Label, mergeStyles, PrimaryButton, Stack } from '@fluentui/react';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 function CallingComponents(): JSX.Element {
     const adapter = useAdapter();
@@ -21,7 +21,7 @@ function CallingComponents(): JSX.Element {
         adapter.onStateChange((state: CallAdapterState) => {
             setPage(state.page);
         });
-    }, []);
+    }, [adapter]);
 
     if (page === 'leftCall') {
         const rejoinCallHandler = () => {
