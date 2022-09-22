@@ -41,9 +41,18 @@ function Configuration(): JSX.Element {
     const adapter = useAdapter();
     const devices = adapter.getState().devices;
     const localView = adapter.getState().devices.unparentedViews
+    
+    const [micChecked, setMicChecked] = useState<boolean>();
+    
     const startCallHandler = () => {
         adapter.joinCall();
     }
+    
+    useEffect(() => {
+        adapter.onStateChange((state: CallAdapterState) => {
+            setMicChecked(state.isLocalPreviewMicrophoneEnabled);
+        })
+    })
 
     const onToggleMic = useCallback(async () => {
         adapter.getState().isLocalPreviewMicrophoneEnabled ? adapter.mute() : adapter.unmute();
@@ -75,6 +84,7 @@ function Configuration(): JSX.Element {
                             {...microphoneProps}
                             disabled={!devices.deviceAccess?.audio}
                             onToggleMicrophone={onToggleMic}
+                            checked={micChecked}
                             showLabel={true}
 
                         />
