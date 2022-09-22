@@ -2,7 +2,11 @@
 
 ### The Goal
 
-The goal of this repo is to attempt to either use the existing `composite adapters` with UI component applications. Or to show how we might create a `UI-component-adapter` to increase developer velocity when creating Component applications.
+The goal of this repo is to show how we might use the `AzureCommunicationCallAdapter` with a component application. This shows that we can give contoso the ability to create their own composite like experience leveraging the power of our adapters. 
+
+Changes to the UI library that were made to make this work were: 
+- Expose the `CallAdapterProvider` from the react-composites package.
+- Expose the composite version of `usePropsFor` as `usePropsForComposite` to allow contoso to manage the data and handlers of their components. 
 
 ## pre-requisites
 
