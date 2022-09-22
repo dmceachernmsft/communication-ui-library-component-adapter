@@ -47,7 +47,7 @@ function Configuration(props: {setLocalCameraOn: (state: boolean) => void, local
     const startCallHandler = () => {
         adapter.joinCall();
     }
-    console.log(cameraProps);
+
     useEffect(() => {
         adapter.onStateChange((state: CallAdapterState) => {
             setMicChecked(state.isLocalPreviewMicrophoneEnabled);
@@ -144,6 +144,14 @@ function CallScreen(props: {localCameraOn: boolean}): JSX.Element {
     const screenShareProps = usePropsForComposite(ScreenShareButton);
 
     const [cameraOn, setCameraOn] = useState<boolean>(props.localCameraOn);
+    /**
+     * This is to check that the camera was on when the user was performing device configuration. The
+     * state of this check comes from the configuration component and is tracked by the parent.
+     * 
+     * This is done this way to match the same way we currently do it (though much more simple) in the 
+     * Calling composite as we do not have a good way to expose video options on the joinCall handler.
+     */
+
     if(cameraOn){
         adapter.startCamera({scalingMode: 'Crop'});
     }
