@@ -43,6 +43,7 @@ export const ReactComposites = (props: ReactCompositeProps): JSX.Element => {
     }, [displayName, groupId, token, userId]);
 
     if (!!callAdapter) {
+
         return (
             <>
                 <div style={containerStyle}>
