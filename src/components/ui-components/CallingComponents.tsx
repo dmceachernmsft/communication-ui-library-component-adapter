@@ -5,10 +5,10 @@ import { useCallback, useEffect, useState } from 'react';
 
 function CallingComponents(): JSX.Element {
     const adapter = useAdapter();
-    
-    console.log(adapter);
 
     const [page, setPage] = useState<CallCompositePage>(adapter.getState().page);
+
+    const [localCameraOn, setLocalCameraOn] = useState<boolean>(false);
 
     useEffect(() => {
         adapter.onStateChange((state: CallAdapterState) => {
@@ -28,26 +28,26 @@ function CallingComponents(): JSX.Element {
     }
 
     if (page === 'configuration') {
-        return (<Configuration />);
+        return (<Configuration setLocalCameraOn={(state: boolean) => setLocalCameraOn(state)} localCameraOn={localCameraOn}/>);
     }
 
     
-    return (<CallScreen />);
+    return (<CallScreen localCameraOn={localCameraOn}/>);
 }
 
-function Configuration(): JSX.Element {
+function Configuration(props: {setLocalCameraOn: (state: boolean) => void, localCameraOn: boolean}): JSX.Element {
     const cameraProps = usePropsForComposite(CameraButton);
     const microphoneProps = usePropsForComposite(MicrophoneButton);
     const adapter = useAdapter();
     const devices = adapter.getState().devices;
     const localView = adapter.getState().devices.unparentedViews
     
-    const [micChecked, setMicChecked] = useState<boolean>();
-    
+    const [micChecked, setMicChecked] = useState<boolean>(false);
+
     const startCallHandler = () => {
         adapter.joinCall();
     }
-    
+    console.log(cameraProps);
     useEffect(() => {
         adapter.onStateChange((state: CallAdapterState) => {
             setMicChecked(state.isLocalPreviewMicrophoneEnabled);
@@ -91,6 +91,10 @@ function Configuration(): JSX.Element {
                         <CameraButton
                             {...cameraProps}
                             showLabel={true}
+                            onToggleCamera={async () => {
+                                await cameraProps.onToggleCamera();
+                                props.setLocalCameraOn(!props.localCameraOn);
+                            }}
                         />
                     </ControlBar>
                 </Stack>
@@ -132,12 +136,15 @@ function Configuration(): JSX.Element {
     )
 }
 
-function CallScreen(): JSX.Element {
+function CallScreen(props: {localCameraOn: boolean}): JSX.Element {
     const adapter = useAdapter();
     const videoGalleryProps = usePropsForComposite(VideoGallery);
     const cameraProps = usePropsForComposite(CameraButton);
     const microphoneProps = usePropsForComposite(MicrophoneButton);
     const screenShareProps = usePropsForComposite(ScreenShareButton);
+    if(props.localCameraOn){
+        adapter.startCamera({scalingMode: 'Crop'});
+    }
 
     return (
         <Stack className={mergeStyles({ height: '30rem' })}>
