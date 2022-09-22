@@ -92,7 +92,7 @@ function Configuration(props: {setLocalCameraOn: (state: boolean) => void, local
                             {...cameraProps}
                             showLabel={true}
                             onToggleCamera={async () => {
-                                await cameraProps.onToggleCamera();
+                                await cameraProps.onToggleCamera({scalingMode: 'Crop'});
                                 props.setLocalCameraOn(!props.localCameraOn);
                             }}
                         />
@@ -142,7 +142,9 @@ function CallScreen(props: {localCameraOn: boolean}): JSX.Element {
     const cameraProps = usePropsForComposite(CameraButton);
     const microphoneProps = usePropsForComposite(MicrophoneButton);
     const screenShareProps = usePropsForComposite(ScreenShareButton);
-    if(props.localCameraOn){
+
+    const [cameraOn, setCameraOn] = useState<boolean>(props.localCameraOn);
+    if(cameraOn){
         adapter.startCamera({scalingMode: 'Crop'});
     }
 
@@ -153,7 +155,11 @@ function CallScreen(props: {localCameraOn: boolean}): JSX.Element {
             </div>
 
             <ControlBar layout='floatingBottom'>
-                {cameraProps && <CameraButton {...cameraProps} />}
+                {cameraProps && <CameraButton {...cameraProps} onToggleCamera={async () => {
+                    await cameraProps.onToggleCamera({scalingMode: 'Crop'});
+                    setCameraOn(!cameraOn);
+                }}
+                checked={cameraOn}/>}
                 {microphoneProps && <MicrophoneButton   {...microphoneProps} />}
                 {screenShareProps && <ScreenShareButton  {...screenShareProps} />}
                 {<EndCallButton onHangUp={() => adapter.leaveCall()} />}
