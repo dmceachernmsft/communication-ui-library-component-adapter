@@ -47,7 +47,7 @@ function Configuration(props: {setLocalCameraOn: (state: boolean) => void, local
     const startCallHandler = () => {
         adapter.joinCall();
     }
-    console.log(cameraProps);
+
     useEffect(() => {
         adapter.onStateChange((state: CallAdapterState) => {
             setMicChecked(state.isLocalPreviewMicrophoneEnabled);
