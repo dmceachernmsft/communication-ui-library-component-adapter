@@ -5,7 +5,8 @@ import {
     People20Filled
   } from '@fluentui/react-icons';
 import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
-import { CustomParticipantList } from './ParticipantList';
+import { CustomParticipantList } from './CustomParticipantList';
+
 
 function CallingComponents(): JSX.Element {
     const adapter = useAdapter();
