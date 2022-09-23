@@ -1,9 +1,6 @@
-import { VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, useCall, usePropsForComposite, useAdapter, ParticipantsButton, HoldButton, DevicesButton, ParticipantList, ControlBarButton, CallCompositePage, CallAdapterState, VideoTile, StreamMedia } from '@azure/communication-react';
-import { Dropdown, IconButton, IDropdownOption, Label, mergeStyles, PrimaryButton, Stack } from '@fluentui/react';
+import { VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, usePropsForComposite, useAdapter, ParticipantList,CallCompositePage, CallAdapterState, VideoTile, StreamMedia } from '@azure/communication-react';
+import { Dropdown, IDropdownOption, Label, mergeStyles, PrimaryButton, Stack } from '@fluentui/react';
 import { useCallback, useEffect, useState } from 'react';
-import {
-    People20Filled
-  } from '@fluentui/react-icons';
 import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
 import { CustomParticipantList } from './CustomParticipantList';
 
@@ -167,14 +164,12 @@ function CallScreen(props: {localCameraOn: boolean}): JSX.Element {
     return (
         <Stack className={mergeStyles({ height: '30rem' })}>
            
-<Stack style={{ width: '100vw', height: '100vh' }} horizontal>
-<div style={{ width: '80vw', height: '40vh'}}>
+        <Stack style={{ width: '100vw', height: '100vh' }} horizontal>
+            <div style={{ width: '80vw', height: '40vh'}}>
                 {videoGalleryProps && <VideoGallery {...videoGalleryProps} layout={'floatingLocalVideo'} />}
             </div>
             <CustomParticipantList {...participantListProps} fileSharedContent={fileSharedContent}/>
-</Stack>
-          
-            
+        </Stack>
             <ControlBar layout='floatingBottom'>
                 {cameraProps && <CameraButton {...cameraProps} onToggleCamera={async () => {
                     await cameraProps.onToggleCamera({scalingMode: 'Crop'});
