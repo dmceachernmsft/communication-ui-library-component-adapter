@@ -8,7 +8,8 @@ import {
 } from '@azure/communication-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import CallingComponents from './ui-components/CallingComponents';
-import { mergeStyles, registerIcons, Stack } from '@fluentui/react';
+import { registerIcons, Stack } from '@fluentui/react';
+import { ChevronDown16Regular } from '@fluentui/react-icons';
 
 
 export interface ReactComponentsProps {
@@ -20,7 +21,7 @@ export interface ReactComponentsProps {
 
 export const ReactComponents = (props: ReactComponentsProps): JSX.Element => {
     const { userId, displayName, token, groupId } = props;
-    registerIcons({ icons: DEFAULT_COMPONENT_ICONS });
+    registerIcons({ icons: {...DEFAULT_COMPONENT_ICONS, ChevronDown: <ChevronDown16Regular/>}});
 
     const [adapter, setAdapter] = useState<CallAdapter>();
 
@@ -48,6 +49,7 @@ export const ReactComponents = (props: ReactComponentsProps): JSX.Element => {
 
         createAdapter();
     }, [credential, displayName, groupId, userId]);
+    console.log('groupId: ' + groupId);
 
     if (!!adapter) {
         adapter.askDevicePermission({ video: true, audio: true });
@@ -58,7 +60,7 @@ export const ReactComponents = (props: ReactComponentsProps): JSX.Element => {
             <>
                 <FluentThemeProvider>
                     {adapter && (<CallAdapterProvider adapter={adapter}>
-                        <Stack className={mergeStyles({ margin: 'auto' })}><CallingComponents /></Stack>
+                        <Stack horizontal styles={{ root: { margin: 'auto', height: '70%', width: '70%' } }}><CallingComponents /></Stack>
                     </CallAdapterProvider>)}
                 </FluentThemeProvider>
 

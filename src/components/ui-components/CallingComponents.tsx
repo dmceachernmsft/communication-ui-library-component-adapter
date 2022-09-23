@@ -1,9 +1,10 @@
-import { VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, usePropsForComposite, useAdapter, ParticipantList,CallCompositePage, CallAdapterState, VideoTile, StreamMedia } from '@azure/communication-react';
-import { Dropdown, IDropdownOption, Label, mergeStyles, PrimaryButton, Stack } from '@fluentui/react';
+import { ControlBarButtonStyles, ControlBarButtonStrings, ControlBarButton, VideoGallery, ControlBar, CameraButton, MicrophoneButton, EndCallButton, usePropsForComposite, useAdapter, ParticipantList, CallCompositePage, CallAdapterState, VideoTile, StreamMedia } from '@azure/communication-react';
+import { Dropdown, IDropdownOption, ITheme, Label, mergeStyles, PrimaryButton, Stack, useTheme } from '@fluentui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
 import { CustomParticipantList } from './CustomParticipantList';
 
+import { QuestionCircle16Regular } from '@fluentui/react-icons';
 
 function CallingComponents(): JSX.Element {
     const adapter = useAdapter();
@@ -30,20 +31,20 @@ function CallingComponents(): JSX.Element {
     }
 
     if (page === 'configuration') {
-        return (<Configuration setLocalCameraOn={(state: boolean) => setLocalCameraOn(state)} localCameraOn={localCameraOn}/>);
+        return (<Configuration setLocalCameraOn={(state: boolean) => setLocalCameraOn(state)} localCameraOn={localCameraOn} />);
     }
 
-    
-    return (<CallScreen localCameraOn={localCameraOn}/>);
+
+    return (<CallScreen localCameraOn={localCameraOn} />);
 }
 
-function Configuration(props: {setLocalCameraOn: (state: boolean) => void, localCameraOn: boolean}): JSX.Element {
+function Configuration(props: { setLocalCameraOn: (state: boolean) => void, localCameraOn: boolean }): JSX.Element {
     const cameraProps = usePropsForComposite(CameraButton);
     const microphoneProps = usePropsForComposite(MicrophoneButton);
     const adapter = useAdapter();
     const devices = adapter.getState().devices;
     const localView = adapter.getState().devices.unparentedViews
-    
+
     const [micChecked, setMicChecked] = useState<boolean>(false);
 
     const startCallHandler = () => {
@@ -88,15 +89,16 @@ function Configuration(props: {setLocalCameraOn: (state: boolean) => void, local
                             onToggleMicrophone={onToggleMic}
                             checked={micChecked}
                             showLabel={true}
-
+                            menuIconProps={{ iconName: 'ChevronDown' }}
                         />
                         <CameraButton
                             {...cameraProps}
                             showLabel={true}
                             onToggleCamera={async () => {
-                                await cameraProps.onToggleCamera({scalingMode: 'Crop'});
+                                await cameraProps.onToggleCamera({ scalingMode: 'Crop' });
                                 props.setLocalCameraOn(!props.localCameraOn);
                             }}
+                            menuIconProps={{ iconName: 'ChevronDown' }}
                         />
                     </ControlBar>
                 </Stack>
@@ -138,12 +140,13 @@ function Configuration(props: {setLocalCameraOn: (state: boolean) => void, local
     )
 }
 
-function CallScreen(props: {localCameraOn: boolean}): JSX.Element {
+function CallScreen(props: { localCameraOn: boolean }): JSX.Element {
+
+    const theme = useTheme();
     const adapter = useAdapter();
     const videoGalleryProps = usePropsForComposite(VideoGallery);
     const cameraProps = usePropsForComposite(CameraButton);
     const microphoneProps = usePropsForComposite(MicrophoneButton);
-    const screenShareProps = usePropsForComposite(ScreenShareButton);
     const participantListProps = usePropsForComposite(ParticipantList)
 
     const [cameraOn, setCameraOn] = useState<boolean>(props.localCameraOn);
@@ -154,32 +157,83 @@ function CallScreen(props: {localCameraOn: boolean}): JSX.Element {
      * This is done this way to match the same way we currently do it (though much more simple) in the 
      * Calling composite as we do not have a good way to expose video options on the joinCall handler.
      */
-     if(cameraOn){
-        adapter.startCamera({scalingMode: 'Crop'});
+    if (cameraOn) {
+        adapter.startCamera({ scalingMode: 'Crop' });
+    }
+
+    const techSupportStrings: ControlBarButtonStrings = {
+        label: 'Tech support',
+        tooltipContent: 'Tech support',
+    }
+
+    const onRenderTechSupportIcon = (): JSX.Element => {
+        return (
+            <QuestionCircle16Regular />
+        )
     }
 
 
-    const fileSharedContent = [{fileName: 'Treament plan', uploadTime:'Updated at 3:24 a.m'},{fileName: 'Pain prescriptions', uploadTime:'Updated on 9/15/22'}]
+    const fileSharedContent = [{ fileName: 'Treament plan', uploadTime: 'Updated at 3:24 a.m' }, { fileName: 'Pain prescriptions', uploadTime: 'Updated on 9/15/22' }]
 
     return (
-        <Stack className={mergeStyles({ height: '30rem' })}>
-           
-        <Stack style={{ width: '100vw', height: '100vh' }} horizontal>
-            <div style={{ width: '80vw', height: '40vh'}}>
-                {videoGalleryProps && <VideoGallery {...videoGalleryProps} layout={'floatingLocalVideo'} />}
-            </div>
-            <CustomParticipantList {...participantListProps} fileSharedContent={fileSharedContent}/>
-        </Stack>
-            <ControlBar layout='floatingBottom'>
-                {cameraProps && <CameraButton {...cameraProps} onToggleCamera={async () => {
-                    await cameraProps.onToggleCamera({scalingMode: 'Crop'});
-                    setCameraOn(!cameraOn);
-                }}
-                checked={cameraOn}/>}
-                {microphoneProps && <MicrophoneButton   {...microphoneProps} />}
-                {screenShareProps && <ScreenShareButton  {...screenShareProps} />}
-                {<EndCallButton onHangUp={() => adapter.leaveCall()} />}
-            </ControlBar>
+        <Stack style={{ margin: 'auto' }}>
+            <Stack style={{ width: '80vw', height: '70vh' }} horizontal>
+                <div style={{ width: 'inherit', }}>
+                    {videoGalleryProps && <VideoGallery {...videoGalleryProps} />}
+                </div>
+                <CustomParticipantList {...participantListProps} fileSharedContent={fileSharedContent} />
+            </Stack>
+            <Stack styles={{ root: { width: '80vw' } }}>
+                <ControlBar styles={{ root: { padding: '0.75rem', columnGap: '0.5rem' } }}>
+                    <Stack horizontal styles={{ root: { margin: 'auto' } }}>
+                        <Stack styles={{ root: { paddingLeft: '0.5rem' } }}>
+                            {cameraProps && <CameraButton
+                                {...cameraProps}
+                                onToggleCamera={async () => {
+                                    await cameraProps.onToggleCamera({ scalingMode: 'Crop' });
+                                    setCameraOn(!cameraOn);
+                                }}
+                                checked={cameraOn}
+                                enableDeviceSelectionMenu={true}
+                                showLabel={true}
+                                styles={getDesktopCommonButtonStyles(theme)}
+                            />}
+                        </Stack>
+                        <Stack styles={{ root: { paddingLeft: '0.5rem' } }}>
+                            {microphoneProps && <MicrophoneButton
+                                {...microphoneProps}
+                                enableDeviceSelectionMenu={true}
+                                showLabel={true}
+                                styles={getDesktopCommonButtonStyles(theme)}
+                            />}
+                        </Stack>
+                    </Stack>
+                    <Stack horizontal styles={{ root: { columnGap: '0.5rem' } }}>
+                        <Stack>
+                            <ControlBarButton
+                                strings={techSupportStrings}
+                                showLabel={true}
+                                styles={getDesktopCommonButtonStyles(theme)}
+                                onRenderIcon={onRenderTechSupportIcon}
+                                onClick={() => {
+                                    alert('This is not the tech support you are looking for...');
+                                    alert('seriously... there is no help here');
+                                    alert('stop looking.. why do you keep bothering me?');
+                                }}
+                            />
+                        </Stack>
+                        <Stack>
+                            {<EndCallButton
+                                onHangUp={() => adapter.leaveCall()}
+                                showLabel={true}
+                                styles={getDesktopCommonButtonStyles(theme)}
+                            />}
+                        </Stack>
+                    </Stack>
+
+                </ControlBar>
+            </Stack>
+
         </Stack>
     );
 }
@@ -203,3 +257,40 @@ const getDropDownList = (list: Array<VideoDeviceInfo | AudioDeviceInfo>): IDropd
 }
 
 export default CallingComponents;
+
+const getDesktopCommonButtonStyles = (theme: ITheme): ControlBarButtonStyles => ({
+    root: {
+        border: `solid 1px ${theme.palette.neutralQuaternaryAlt}`,
+        borderRadius: theme.effects.roundedCorner4,
+        minHeight: '2.5rem',
+        maxWidth: '12rem', // allot extra space than the regular ControlBarButton. This is to give extra room to have the icon beside the text.
+    },
+    flexContainer: {
+        display: 'flex',
+        flexFlow: 'row nowrap'
+    },
+    textContainer: {
+        display: 'inline',
+        maxWidth: '100%'
+    },
+    label: {
+        fontSize: theme.fonts.medium.fontSize,
+        marginLeft: '0.625rem',
+        lineHeight: '1.5rem',
+        display: 'block',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        overflow: 'hidden'
+    },
+    splitButtonMenuButton: {
+        border: `solid 1px ${theme.palette.neutralQuaternaryAlt}`,
+        borderTopRightRadius: theme.effects.roundedCorner4,
+        borderBottomRightRadius: theme.effects.roundedCorner4,
+        borderTopLeftRadius: '0',
+        borderBottomLeftRadius: '0',
+
+    },
+    splitButtonMenuButtonChecked: {
+        background: 'none'
+    }
+});
