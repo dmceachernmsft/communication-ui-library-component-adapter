@@ -9,6 +9,7 @@ import {
 import React, { useEffect, useMemo, useState } from 'react';
 import CallingComponents from './ui-components/CallingComponents';
 import { mergeStyles, registerIcons, Stack } from '@fluentui/react';
+import { ChevronDown16Regular } from '@fluentui/react-icons';
 
 
 export interface ReactComponentsProps {
@@ -20,7 +21,7 @@ export interface ReactComponentsProps {
 
 export const ReactComponents = (props: ReactComponentsProps): JSX.Element => {
     const { userId, displayName, token, groupId } = props;
-    registerIcons({ icons: DEFAULT_COMPONENT_ICONS });
+    registerIcons({ icons: {...DEFAULT_COMPONENT_ICONS, ChevronDown: <ChevronDown16Regular/>}});
 
     const [adapter, setAdapter] = useState<CallAdapter>();
 

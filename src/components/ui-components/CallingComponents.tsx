@@ -1,7 +1,8 @@
 import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
-import { ControlBarButtonStyles, VideoGallery, ControlBar, CameraButton, MicrophoneButton, EndCallButton, usePropsForComposite, useAdapter, CallCompositePage, CallAdapterState, VideoTile, StreamMedia, DevicesButton } from '@azure/communication-react';
+import { ControlBarButtonStyles, ControlBarButtonStrings, ControlBarButton, VideoGallery, ControlBar, CameraButton, MicrophoneButton, EndCallButton, usePropsForComposite, useAdapter, CallCompositePage, CallAdapterState, VideoTile, StreamMedia, DevicesButton } from '@azure/communication-react';
 import { Dropdown, IDropdownOption, ITheme, Label, mergeStyles, PrimaryButton, Stack, useTheme } from '@fluentui/react';
 import { useCallback, useEffect, useState } from 'react';
+import { QuestionCircle16Regular } from '@fluentui/react-icons';
 
 function CallingComponents(): JSX.Element {
     const adapter = useAdapter();
@@ -86,7 +87,7 @@ function Configuration(props: { setLocalCameraOn: (state: boolean) => void, loca
                             onToggleMicrophone={onToggleMic}
                             checked={micChecked}
                             showLabel={true}
-
+                            menuIconProps={{ iconName: 'ChevronDown' }}
                         />
                         <CameraButton
                             {...cameraProps}
@@ -95,6 +96,7 @@ function Configuration(props: { setLocalCameraOn: (state: boolean) => void, loca
                                 await cameraProps.onToggleCamera({ scalingMode: 'Crop' });
                                 props.setLocalCameraOn(!props.localCameraOn);
                             }}
+                            menuIconProps={{ iconName: 'ChevronDown' }}
                         />
                     </ControlBar>
                 </Stack>
@@ -152,9 +154,19 @@ function CallScreen(props: { localCameraOn: boolean }): JSX.Element {
      * This is done this way to match the same way we currently do it (though much more simple) in the 
      * Calling composite as we do not have a good way to expose video options on the joinCall handler.
      */
-
     if (cameraOn) {
         adapter.startCamera({ scalingMode: 'Crop' });
+    }
+
+    const techSupportStrings: ControlBarButtonStrings = {
+        label: 'Tech support',
+        tooltipContent: 'Tech support',
+    }
+
+    const onRenderTechSupportIcon = (): JSX.Element => {
+        return (
+            <QuestionCircle16Regular />
+        )
     }
 
     return (
@@ -162,45 +174,57 @@ function CallScreen(props: { localCameraOn: boolean }): JSX.Element {
             <div style={{ width: '100vw', height: '100vh' }}>
                 {videoGalleryProps && <VideoGallery {...videoGalleryProps} />}
             </div>
-
-            <ControlBar styles={{ root: { margin: 'auto' } }}>
-                <Stack horizontal >
-                    <Stack styles={{ root: { paddingLeft: '0.5rem' } }}>
-                        {cameraProps && <CameraButton
-                            {...cameraProps}
-                            onToggleCamera={async () => {
-                                await cameraProps.onToggleCamera({ scalingMode: 'Crop' });
-                                setCameraOn(!cameraOn);
-
-                            }}
-                            checked={cameraOn}
-                            enableDeviceSelectionMenu={true}
-                            menuIconProps={{ iconName: 'OptionsCamera' }}
-                            showLabel={true}
-                            styles={getDesktopCommonButtonStyles(theme)}
-                        />}
+            <Stack styles={{ root: { margin: 'auto', width: '100%' } }}>
+                <ControlBar styles={{ root: { padding: '0.75rem', columnGap: '0.5rem' } }}>
+                    <Stack horizontal styles={{ root: { margin: 'auto' } }}>
+                        <Stack styles={{ root: { paddingLeft: '0.5rem' } }}>
+                            {cameraProps && <CameraButton
+                                {...cameraProps}
+                                onToggleCamera={async () => {
+                                    await cameraProps.onToggleCamera({ scalingMode: 'Crop' });
+                                    setCameraOn(!cameraOn);
+                                }}
+                                checked={cameraOn}
+                                enableDeviceSelectionMenu={true}
+                                showLabel={true}
+                                styles={getDesktopCommonButtonStyles(theme)}
+                            />}
+                        </Stack>
+                        <Stack styles={{ root: { paddingLeft: '0.5rem' } }}>
+                            {microphoneProps && <MicrophoneButton
+                                {...microphoneProps}
+                                enableDeviceSelectionMenu={true}
+                                showLabel={true}
+                                styles={getDesktopCommonButtonStyles(theme)}
+                            />}
+                        </Stack>
                     </Stack>
-                    <Stack styles={{ root: { paddingLeft: '0.5rem' } }}>
-                        {microphoneProps && <MicrophoneButton
-                            {...microphoneProps}
-                            enableDeviceSelectionMenu={true}
-                            menuIconProps={{ iconName: 'OptionsMic' }}
-                            showLabel={true}
-                            styles={getDesktopCommonButtonStyles(theme)}
-                        />}
+                    <Stack horizontal styles={{ root: { columnGap: '0.5rem' } }}>
+                        <Stack>
+                            <ControlBarButton
+                                strings={techSupportStrings}
+                                showLabel={true}
+                                styles={getDesktopCommonButtonStyles(theme)}
+                                onRenderIcon={onRenderTechSupportIcon}
+                                onClick={() => {
+                                    alert('This is not the tech support you are looking for...');
+                                    alert('seriously... there is no help here');
+                                    alert('stop looking.. why do you keep bothering me?');
+                                }}
+                            />
+                        </Stack>
+                        <Stack>
+                            {<EndCallButton
+                                onHangUp={() => adapter.leaveCall()}
+                                showLabel={true}
+                                styles={getDesktopCommonButtonStyles(theme)}
+                            />}
+                        </Stack>
                     </Stack>
-                </Stack>
-                <Stack styles={{root: {float: 'right'}}}>
-                    <Stack>
-                        {<EndCallButton
-                            onHangUp={() => adapter.leaveCall()}
-                            showLabel={true}
-                            styles={getDesktopCommonButtonStyles(theme)}
-                        />}
-                    </Stack>
-                </Stack>
 
-            </ControlBar>
+                </ControlBar>
+            </Stack>
+
         </Stack>
     );
 }
