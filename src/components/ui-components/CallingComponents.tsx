@@ -1,7 +1,11 @@
-import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
-import { VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, usePropsForComposite, useAdapter, CallCompositePage, CallAdapterState, VideoTile, StreamMedia } from '@azure/communication-react';
-import { Dropdown, IDropdownOption, Label, mergeStyles, PrimaryButton, Stack } from '@fluentui/react';
+import { VideoGallery, ControlBar, CameraButton, MicrophoneButton, ScreenShareButton, EndCallButton, useCall, usePropsForComposite, useAdapter, ParticipantsButton, HoldButton, DevicesButton, ParticipantList, ControlBarButton, CallCompositePage, CallAdapterState, VideoTile, StreamMedia } from '@azure/communication-react';
+import { Dropdown, IconButton, IDropdownOption, Label, mergeStyles, PrimaryButton, Stack } from '@fluentui/react';
 import { useCallback, useEffect, useState } from 'react';
+import {
+    People20Filled
+  } from '@fluentui/react-icons';
+import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
+import { CustomParticipantList } from './ParticipantList';
 
 function CallingComponents(): JSX.Element {
     const adapter = useAdapter();
@@ -142,6 +146,7 @@ function CallScreen(props: {localCameraOn: boolean}): JSX.Element {
     const cameraProps = usePropsForComposite(CameraButton);
     const microphoneProps = usePropsForComposite(MicrophoneButton);
     const screenShareProps = usePropsForComposite(ScreenShareButton);
+    const participantListProps = usePropsForComposite(ParticipantList)
 
     const [cameraOn, setCameraOn] = useState<boolean>(props.localCameraOn);
     /**
@@ -151,17 +156,24 @@ function CallScreen(props: {localCameraOn: boolean}): JSX.Element {
      * This is done this way to match the same way we currently do it (though much more simple) in the 
      * Calling composite as we do not have a good way to expose video options on the joinCall handler.
      */
-
-    if(cameraOn){
+     if(cameraOn){
         adapter.startCamera({scalingMode: 'Crop'});
     }
 
+
+    const fileSharedContent = [{fileName: 'Treament plan', uploadTime:'Updated at 3:24 a.m'},{fileName: 'Pain prescriptions', uploadTime:'Updated on 9/15/22'}]
+
     return (
         <Stack className={mergeStyles({ height: '30rem' })}>
-            <div style={{ width: '100vw', height: '100vh' }}>
+           
+<Stack style={{ width: '100vw', height: '100vh' }} horizontal>
+<div style={{ width: '80vw', height: '40vh'}}>
                 {videoGalleryProps && <VideoGallery {...videoGalleryProps} layout={'floatingLocalVideo'} />}
             </div>
-
+            <CustomParticipantList {...participantListProps} fileSharedContent={fileSharedContent}/>
+</Stack>
+          
+            
             <ControlBar layout='floatingBottom'>
                 {cameraProps && <CameraButton {...cameraProps} onToggleCamera={async () => {
                     await cameraProps.onToggleCamera({scalingMode: 'Crop'});
