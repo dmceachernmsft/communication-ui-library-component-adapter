@@ -15,15 +15,11 @@ Changes to the UI library that were made to make this work were:
 ## Dependency Note:
 If you are sintalling the packages on Mac or Linux you will need to update:
 ```json
-...
 "@azure/communication-react": ".\\deps\\azure-communication-react-1.3.2-beta.0-with-provider.tgz",
-...
 ```
 to be: 
 ```json
-...
 "@azure/communication-react": "./deps/azure-communication-react-1.3.2-beta.0-with-provider.tgz",
-...
 ```
 
 ## Getting started
