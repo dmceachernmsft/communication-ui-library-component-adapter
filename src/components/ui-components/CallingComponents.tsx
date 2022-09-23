@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
 import { CustomParticipantList } from './CustomParticipantList';
 
-import { QuestionCircle16Regular } from '@fluentui/react-icons';
+import { QuestionCircle20Regular } from '@fluentui/react-icons';
 
 function CallingComponents(): JSX.Element {
     const adapter = useAdapter();
@@ -168,7 +168,7 @@ function CallScreen(props: { localCameraOn: boolean }): JSX.Element {
 
     const onRenderTechSupportIcon = (): JSX.Element => {
         return (
-            <QuestionCircle16Regular />
+            <QuestionCircle20Regular />
         )
     }
 
@@ -176,7 +176,7 @@ function CallScreen(props: { localCameraOn: boolean }): JSX.Element {
     const fileSharedContent = [{ fileName: 'Treament plan', uploadTime: 'Updated at 3:24 a.m' }, { fileName: 'Pain prescriptions', uploadTime: 'Updated on 9/15/22' }]
 
     return (
-        <Stack style={{ margin: 'auto' }}>
+        <Stack style={{ margin: 'auto' ,boxShadow: theme.effects.elevation16}}>
             <Stack style={{ width: '80vw', height: '70vh' }} horizontal>
                 <div style={{ width: 'inherit', }}>
                     {videoGalleryProps && <VideoGallery {...videoGalleryProps} />}

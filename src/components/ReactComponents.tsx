@@ -60,7 +60,7 @@ export const ReactComponents = (props: ReactComponentsProps): JSX.Element => {
             <>
                 <FluentThemeProvider>
                     {adapter && (<CallAdapterProvider adapter={adapter}>
-                        <Stack horizontal styles={{ root: { margin: 'auto', height: '70%', width: '70%' } }}><CallingComponents /></Stack>
+                        <Stack horizontal styles={{ root: { margin: 'auto', height: '70rem', width: '70%' } }}><CallingComponents /></Stack>
                     </CallAdapterProvider>)}
                 </FluentThemeProvider>
 
