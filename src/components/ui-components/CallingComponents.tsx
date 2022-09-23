@@ -1,5 +1,5 @@
 import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
-import { ControlBarButtonStyles, ControlBarButtonStrings, ControlBarButton, VideoGallery, ControlBar, CameraButton, MicrophoneButton, EndCallButton, usePropsForComposite, useAdapter, CallCompositePage, CallAdapterState, VideoTile, StreamMedia, DevicesButton } from '@azure/communication-react';
+import { ControlBarButtonStyles, ControlBarButtonStrings, ControlBarButton, VideoGallery, ControlBar, CameraButton, MicrophoneButton, EndCallButton, usePropsForComposite, useAdapter, CallCompositePage, CallAdapterState, VideoTile, StreamMedia } from '@azure/communication-react';
 import { Dropdown, IDropdownOption, ITheme, Label, mergeStyles, PrimaryButton, Stack, useTheme } from '@fluentui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { QuestionCircle16Regular } from '@fluentui/react-icons';
