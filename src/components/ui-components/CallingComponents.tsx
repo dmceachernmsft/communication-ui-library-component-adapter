@@ -176,15 +176,14 @@ function CallScreen(props: { localCameraOn: boolean }): JSX.Element {
     const fileSharedContent = [{ fileName: 'Treament plan', uploadTime: 'Updated at 3:24 a.m' }, { fileName: 'Pain prescriptions', uploadTime: 'Updated on 9/15/22' }]
 
     return (
-        <Stack className={mergeStyles({ height: '30rem' })}>
-
-            <Stack style={{ width: '100vw', height: '100vh' }} horizontal>
-                <div style={{ width: '80vw', height: '40vh' }}>
+        <Stack style={{ margin: 'auto' }}>
+            <Stack style={{ width: '80vw', height: '70vh' }} horizontal>
+                <div style={{ width: 'inherit', }}>
                     {videoGalleryProps && <VideoGallery {...videoGalleryProps} />}
                 </div>
                 <CustomParticipantList {...participantListProps} fileSharedContent={fileSharedContent} />
             </Stack>
-            <Stack styles={{ root: { margin: 'auto', width: '100%' } }}>
+            <Stack styles={{ root: { width: '80vw' } }}>
                 <ControlBar styles={{ root: { padding: '0.75rem', columnGap: '0.5rem' } }}>
                     <Stack horizontal styles={{ root: { margin: 'auto' } }}>
                         <Stack styles={{ root: { paddingLeft: '0.5rem' } }}>
