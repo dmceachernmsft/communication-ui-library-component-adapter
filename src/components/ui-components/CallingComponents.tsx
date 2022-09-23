@@ -1,7 +1,9 @@
-import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
-import { ControlBarButtonStyles, ControlBarButtonStrings, ControlBarButton, VideoGallery, ControlBar, CameraButton, MicrophoneButton, EndCallButton, usePropsForComposite, useAdapter, CallCompositePage, CallAdapterState, VideoTile, StreamMedia } from '@azure/communication-react';
+import { ControlBarButtonStyles, ControlBarButtonStrings, ControlBarButton, VideoGallery, ControlBar, CameraButton, MicrophoneButton, EndCallButton, usePropsForComposite, useAdapter, ParticipantList, CallCompositePage, CallAdapterState, VideoTile, StreamMedia } from '@azure/communication-react';
 import { Dropdown, IDropdownOption, ITheme, Label, mergeStyles, PrimaryButton, Stack, useTheme } from '@fluentui/react';
 import { useCallback, useEffect, useState } from 'react';
+import { AudioDeviceInfo, VideoDeviceInfo } from '@azure/communication-calling';
+import { CustomParticipantList } from './CustomParticipantList';
+
 import { QuestionCircle16Regular } from '@fluentui/react-icons';
 
 function CallingComponents(): JSX.Element {
@@ -145,6 +147,7 @@ function CallScreen(props: { localCameraOn: boolean }): JSX.Element {
     const videoGalleryProps = usePropsForComposite(VideoGallery);
     const cameraProps = usePropsForComposite(CameraButton);
     const microphoneProps = usePropsForComposite(MicrophoneButton);
+    const participantListProps = usePropsForComposite(ParticipantList)
 
     const [cameraOn, setCameraOn] = useState<boolean>(props.localCameraOn);
     /**
@@ -169,11 +172,18 @@ function CallScreen(props: { localCameraOn: boolean }): JSX.Element {
         )
     }
 
+
+    const fileSharedContent = [{ fileName: 'Treament plan', uploadTime: 'Updated at 3:24 a.m' }, { fileName: 'Pain prescriptions', uploadTime: 'Updated on 9/15/22' }]
+
     return (
         <Stack className={mergeStyles({ height: '30rem' })}>
-            <div style={{ width: '100vw', height: '100vh' }}>
-                {videoGalleryProps && <VideoGallery {...videoGalleryProps} />}
-            </div>
+
+            <Stack style={{ width: '100vw', height: '100vh' }} horizontal>
+                <div style={{ width: '80vw', height: '40vh' }}>
+                    {videoGalleryProps && <VideoGallery {...videoGalleryProps} />}
+                </div>
+                <CustomParticipantList {...participantListProps} fileSharedContent={fileSharedContent} />
+            </Stack>
             <Stack styles={{ root: { margin: 'auto', width: '100%' } }}>
                 <ControlBar styles={{ root: { padding: '0.75rem', columnGap: '0.5rem' } }}>
                     <Stack horizontal styles={{ root: { margin: 'auto' } }}>
