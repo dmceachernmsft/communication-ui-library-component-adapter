@@ -177,7 +177,7 @@ function CallScreen(props: { localCameraOn: boolean }): JSX.Element {
 
     return (
         <Stack style={{ margin: 'auto' ,boxShadow: theme.effects.elevation16}}>
-            <Stack style={{ width: '80vw', height: '70vh' }} horizontal>
+            <Stack style={{ width: '75vw', height: '70vh' }} horizontal>
                 <div style={{ width: 'inherit', }}>
                     {videoGalleryProps && <VideoGallery {...videoGalleryProps} />}
                 </div>
